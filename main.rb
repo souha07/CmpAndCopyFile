@@ -95,16 +95,28 @@ srcFileList.each do |pathName|
 	
 	cmpPathName = SearchCmpPathFromSrcPathName( pathName, cmpFileList )
 
+	# -1 : none  0
+	#  0 : not file
+	#  1 : change file
+	copyType = -1
 	if cmpPathName == nil then
-		FileCopyRelativePath( srcDirName, pathName, dstDirName )
-		p "FileCopy(   Not File) : " + File.basename( pathName )
+		copyType = 0
 	else
 		# ファイル内容チェック
 		if FileUtils.cmp( pathName, cmpPathName ) == false then
-			FileCopyRelativePath( srcDirName, pathName, dstDirName )
-			p "FileCopy(Change File) : " + File.basename( pathName )
+			copyType = 1
 		end
 	end	
+
+
+	if copyType != -1 then
+		FileCopyRelativePath( srcDirName, pathName, dstDirName )
+		if copyType == 0 then
+			p "FileCopy(   Not File) : " + File.basename( pathName )
+		else
+			p "FileCopy(Change File) : " + File.basename( pathName )
+		end
+	end
 end
 
 
