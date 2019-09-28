@@ -15,14 +15,14 @@ require_relative './PathUtility'
 ###########################################################################
 def SearchCmpPathFromSrcPathName( srcPathName, cmpFileList )
 
-	srcFileName = File.basename( srcPathName ).downcase
+    srcFileName = File.basename( srcPathName ).downcase
 
-	cmpPathName = cmpFileList.find do |item|
-		cmpFileName = File.basename( item ).downcase
-		cmpFileName == srcFileName
-	end
+    cmpPathName = cmpFileList.find do |item|
+        cmpFileName = File.basename( item ).downcase
+        cmpFileName == srcFileName
+    end
 
-	return cmpPathName
+    return cmpPathName
 end
 
 
@@ -31,12 +31,12 @@ end
 ###########################################################################
 def FileCopyRelativePath( basePathName, srcPathName, dstDirName )
 
-	relativePathName = GetRelativePath( srcPathName, basePathName )
-	dstPathName = dstDirName + "\\" + relativePathName;
+    relativePathName = GetRelativePath( srcPathName, basePathName )
+    dstPathName = dstDirName + "\\" + relativePathName;
 
-	FileUtils.mkdir_p( File.dirname( dstPathName ) )
+    FileUtils.mkdir_p( File.dirname( dstPathName ) )
 
-	FileUtils.cp( srcPathName, dstPathName );
+    FileUtils.cp( srcPathName, dstPathName );
 end
 
 
@@ -49,11 +49,11 @@ end
 # コマンドライン引数チェック
 if ARGV[0] == nil || ARGV[1] == nil || ARGV[2] == nil
     puts "コマンドライン引数が正しくありません"
-	puts "実行exe名"
-	puts "ソースフォルダ（コピー元フォルダ）"
-	puts "比較先フォルダ"
-	puts "出力先フォルダ"
-	puts "となります"
+    puts "実行exe名"
+    puts "ソースフォルダ（コピー元フォルダ）"
+    puts "比較先フォルダ"
+    puts "出力先フォルダ"
+    puts "となります"
     exit
 end
 
@@ -70,9 +70,9 @@ dstDirName = GetAbsolutePath( ARGV[2].dup, Dir.pwd )
 p srcDirName
 srcFileList = Array.new();
 Find.find(srcDirName) do |f|
-	next unless FileTest.file?(f)
-	
-	srcFileList.push( f );
+    next unless FileTest.file?(f)
+    
+    srcFileList.push( f );
 end
 
 
@@ -80,9 +80,9 @@ end
 p cmpDirName
 cmpFileList = Array.new();
 Find.find(cmpDirName) do |f|
-	next unless FileTest.file?(f)
-	
-	cmpFileList.push( f );
+    next unless FileTest.file?(f)
+    
+    cmpFileList.push( f );
 end
 
 
@@ -92,31 +92,31 @@ FileUtils.mkdir_p( dstDirName )
 
 # 比較・コピー処理
 srcFileList.each do |pathName|
-	
-	cmpPathName = SearchCmpPathFromSrcPathName( pathName, cmpFileList )
+    
+    cmpPathName = SearchCmpPathFromSrcPathName( pathName, cmpFileList )
 
-	# -1 : none  0
-	#  0 : not file
-	#  1 : change file
-	copyType = -1
-	if cmpPathName == nil then
-		copyType = 0
-	else
-		# ファイル内容チェック
-		if FileUtils.cmp( pathName, cmpPathName ) == false then
-			copyType = 1
-		end
-	end	
+    # -1 : none  0
+    #  0 : not file
+    #  1 : change file
+    copyType = -1
+    if cmpPathName == nil then
+        copyType = 0
+    else
+        # ファイル内容チェック
+        if FileUtils.cmp( pathName, cmpPathName ) == false then
+            copyType = 1
+        end
+    end	
 
 
-	if copyType != -1 then
-		FileCopyRelativePath( srcDirName, pathName, dstDirName )
-		if copyType == 0 then
-			p "FileCopy(   Not File) : " + File.basename( pathName )
-		else
-			p "FileCopy(Change File) : " + File.basename( pathName )
-		end
-	end
+    if copyType != -1 then
+        FileCopyRelativePath( srcDirName, pathName, dstDirName )
+        if copyType == 0 then
+            p "FileCopy(   Not File) : " + File.basename( pathName )
+        else
+            p "FileCopy(Change File) : " + File.basename( pathName )
+        end
+    end
 end
 
 
